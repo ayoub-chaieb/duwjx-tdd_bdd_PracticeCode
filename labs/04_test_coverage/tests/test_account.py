@@ -53,3 +53,62 @@ class TestAccountModel(TestCase):
         account.create()
         self.assertEqual(len(Account.all()), 1)
 
+    def test_repr(self):
+        """ Test Account representation """
+        data = ACCOUNT_DATA[self.rand] # get a random account
+        account = Account(**data)
+        self.assertEqual(account.__repr__(), f"<Account '{account.name}'>")
+        self.assertEqual(account.__repr__(), str(account))
+        account.name = "Ayoub"
+        self.assertEqual(str(account), "<Account 'Ayoub'>")
+
+    def test_dict_serialization(self):
+        """ Test serialization of account as a dictionary """
+        data = ACCOUNT_DATA[self.rand] # get a random account
+        account = Account(**data)
+        result = account.to_dict()
+        self.assertEqual(account.name, result["name"])
+        self.assertEqual(account.email, result["email"])
+        self.assertEqual(account.phone_number, result["phone_number"])
+        self.assertEqual(account.disabled, result["disabled"])
+        self.assertEqual(account.date_joined, result["date_joined"])
+
+    def test_account_from_dict(self):
+        """ Test setting attributes of account from a dictionary """
+        data = ACCOUNT_DATA[self.rand] # get a random account
+        account = Account()
+        account.from_dict(data)
+        self.assertEqual(account.name, data["name"])
+        self.assertEqual(account.email, data["email"])
+        self.assertEqual(account.phone_number, data["phone_number"])
+        self.assertEqual(account.disabled, data["disabled"])
+        self.assertEqual(account.date_joined, None)
+
+    def test_update_account(self):
+        """ Test updating account """
+        data = ACCOUNT_DATA[self.rand] # get a random account
+        account = Account(**data)
+        account.create()
+        self.assertIsNotNone(account.id)
+        account.name = "Ayoub"
+        account.update()
+        found = Account.find(account.id)
+        self.assertEqual(account.name, "Ayoub")
+        
+    def test_invalid_id_on_update(self):
+        """ Test invalid ID update """
+        data = ACCOUNT_DATA[self.rand] # get a random account
+        account = Account(**data)
+        account.id = None
+        self.assertRaises(DataValidationError, account.update)
+        
+    def test_delete_account(self):
+        """ Test deleting account """
+        data = ACCOUNT_DATA[self.rand] # get a random account
+        account = Account(**data)
+        account.create()
+        self.assertEqual(len(Account.all()), 1)
+        account.delete()
+        self.assertEqual(len(Account.all()), 0)
+
+
