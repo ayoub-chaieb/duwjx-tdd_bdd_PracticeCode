@@ -16,3 +16,29 @@ def create_counter(name):
 
     COUNTERS[name] = 0
     return { name: COUNTERS[name] }, status.HTTP_201_CREATED
+
+@app.route("/counters/<name>", methods=["PUT"])
+def update_counter(name):
+    """Updates (increments by 1) a counter"""
+    app.logger.info(f"Request to update counter (increments by 1): {name}")
+    global COUNTERS
+    COUNTERS[name] += 1
+    app.logger.info(f"Counter: {name} is now {COUNTERS[name]}")
+    return { name: COUNTERS[name] }, status.HTTP_200_OK
+
+@app.route("/counters/<name>")
+def read_counter(name):
+    """Reads a counter"""
+    app.logger.info(f"Request to read a counter: {name}")
+    app.logger.info(f"Counter: {name} is now {COUNTERS[name]}")
+    return { name: COUNTERS[name] }, status.HTTP_200_OK
+
+@app.route("/counters/<name>", methods=["DELETE"])
+def delete_counter(name):
+    """Delete a counter"""
+    app.logger.info(f"Request to delete counter: {name}")
+
+    del(COUNTERS[name])
+
+    app.logger.info(f"Counter: {name} has been deleted")
+    return '', status.HTTP_204_NO_CONTENT
