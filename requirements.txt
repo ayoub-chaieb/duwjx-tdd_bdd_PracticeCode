@@ -1,5 +1,5 @@
 # Pin dependancies that might cause breakage
-Werkzeug==2.1.2
+Werkzeug==3.1.5
 SQLAlchemy==1.4.46
 
 # Dependencies for all lab
@@ -13,3 +13,4 @@ pinocchio==0.4.3
 coverage==6.3.2
 factory-boy==2.12.0
 pylint==2.14.0
+urllib3>=2.6.3 # not directly required, pinned by Snyk to avoid a vulnerability
